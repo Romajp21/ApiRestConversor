@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor API</title>
+    <script>
+        async function convert(type) {
+            const value = document.getElementById("value").value;
+            const response = await fetch(type === "post" ? "/convert" : `/convert/${document.getElementById("conversionType").value}?value=${value}`, {
+                method: type === "post" ? "POST" : "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: type === "post" ? JSON.stringify({ type: document.getElementById("conversionType").value, value: parseFloat(value) }) : null
+            });
+
+            const result = await response.json();
+            document.getElementById("result").innerText = JSON.stringify(result);
+        }
+    </script>
+</head>
+<body>
+    <h1>API de Conversión</h1>
+    <div>
+        <label for="conversionType">Tipo de Conversión:</label>
+        <select id="conversionType">
+            <option value="celsius-to-fahrenheit">Celsius a Fahrenheit</option>
+            <option value="fahrenheit-to-celsius">Fahrenheit a Celsius</option>
+            <option value="km-to-miles">Kilómetros a Millas</option>
+            <option value="miles-to-km">Millas a Kilómetros</option>
+            <option value="inches-to-cm">Pulgadas a Centímetros</option>
+            <option value="cm-to-inches">Centímetros a Pulgadas</option>
+            <option value="feet-to-meters">Pies a Metros</option>
+            <option value="meters-to-feet">Metros a Pies</option>
+        </select>
+    </div>
+    <div>
+        <label for="value">Valor:</label>
+        <input type="number" id="value" step="any">
+    </div>
+    <div>
+        <button onclick="convert('get')">Convertir (GET)</button>
+        <button onclick="convert('post')">Convertir (POST)</button>
+    </div>
+    <h2>Resultado:</h2>
+    <pre id="result"></pre>
+</body>
+</html>
