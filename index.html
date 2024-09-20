@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversor API</title>
+    <title>API de Conversión</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script>
         async function convert(type) {
             const value = document.getElementById("value").value;
-            const response = await fetch(type === "post" ? "/convert" : `/convert/${document.getElementById("conversionType").value}?value=${value}`, {
+            const conversionType = document.getElementById("conversionType").value;
+            const response = await fetch(type === "post" ? "/convert" : `/convert/${conversionType}?value=${value}`, {
                 method: type === "post" ? "POST" : "GET",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: type === "post" ? JSON.stringify({ type: document.getElementById("conversionType").value, value: parseFloat(value) }) : null
+                body: type === "post" ? JSON.stringify({ type: conversionType, value: parseFloat(value) }) : null
             });
 
             const result = await response.json();
@@ -21,29 +23,57 @@
     </script>
 </head>
 <body>
-    <h1>API de Conversión</h1>
-    <div>
-        <label for="conversionType">Tipo de Conversión:</label>
-        <select id="conversionType">
-            <option value="celsius-to-fahrenheit">Celsius a Fahrenheit</option>
-            <option value="fahrenheit-to-celsius">Fahrenheit a Celsius</option>
-            <option value="km-to-miles">Kilómetros a Millas</option>
-            <option value="miles-to-km">Millas a Kilómetros</option>
-            <option value="inches-to-cm">Pulgadas a Centímetros</option>
-            <option value="cm-to-inches">Centímetros a Pulgadas</option>
-            <option value="feet-to-meters">Pies a Metros</option>
-            <option value="meters-to-feet">Metros a Pies</option>
-        </select>
+    <div class="container mt-5">
+        <h1 class="text-center">API de Conversión</h1>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Cómo usar la API:</h5>
+                <h6>GET</h6>
+                <p>Para realizar una conversión utilizando el método GET, usa la siguiente URL:</p>
+                <code>http://localhost:8080/convert/{tipo}?value={valor}</code>
+                <p>Ejemplo: <code>http://localhost:8080/convert/celsius-to-fahrenheit?value=60</code></p>
+                
+                <h6>POST</h6>
+                <p>Para realizar una conversión utilizando el método POST, envía un JSON con el tipo de conversión y el valor:</p>
+                <code>http://localhost:8080/convert</code>
+                <p>Ejemplo de cuerpo (Body):</p>
+                <pre>{
+    "type": "fahrenheit-to-celsius",
+    "value": 100
+}</pre>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <form id="conversionForm">
+                    <div class="form-group">
+                        <label for="conversionType">Tipo de Conversión:</label>
+                        <select id="conversionType" class="form-control">
+                            <option value="celsius-to-fahrenheit">Celsius a Fahrenheit</option>
+                            <option value="fahrenheit-to-celsius">Fahrenheit a Celsius</option>
+                            <option value="km-to-miles">Kilómetros a Millas</option>
+                            <option value="miles-to-km">Millas a Kilómetros</option>
+                            <option value="inches-to-cm">Pulgadas a Centímetros</option>
+                            <option value="cm-to-inches">Centímetros a Pulgadas</option>
+                            <option value="feet-to-meters">Pies a Metros</option>
+                            <option value="meters-to-feet">Metros a Pies</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="value">Valor:</label>
+                        <input type="number" id="value" class="form-control" step="any" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="convert('get')">Convertir (GET)</button>
+                    <button type="button" class="btn btn-secondary" onclick="convert('post')">Convertir (POST)</button>
+                </form>
+                <h2 class="mt-4">Resultado:</h2>
+                <pre id="result" class="border p-3"></pre>
+            </div>
+        </div>
     </div>
-    <div>
-        <label for="value">Valor:</label>
-        <input type="number" id="value" step="any">
-    </div>
-    <div>
-        <button onclick="convert('get')">Convertir (GET)</button>
-        <button onclick="convert('post')">Convertir (POST)</button>
-    </div>
-    <h2>Resultado:</h2>
-    <pre id="result"></pre>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
